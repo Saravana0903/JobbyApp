@@ -1,0 +1,28 @@
+.bg-con {
+  background-image: url('https://assets.ccbp.in/frontend/react-js/home-lg-bg.png');
+  background-size: cover;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: auto;
+}
+
+.main-head {
+  color: whitesmoke;
+  font-size: 65px;
+  font-weight: bold;
+  font-family: 'Open Sans';
+}
+.main-para {
+  color: whitesmoke;
+  font-size: 22px;
+  font-weight: 500;
+  font-family: 'Caveat';
+}
+
+@media screen and (max-width: 767px) {
+  .main-head {
+    font-size: 32px;
+  }
+}
