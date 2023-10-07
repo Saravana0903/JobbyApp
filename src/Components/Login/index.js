@@ -1,24 +1,42 @@
 import {useState} from 'react'
+import {Redirect} from 'react-router-dom'
+import Cookies from 'js-cookie'
 import './index.css'
 
-const Login = () => {
+const Login = props => {
   const [user, setUser] = useState({username: '', password: ''})
+  const [err, setErr] = useState('')
+  //   const history = useHistory()
+  const {history} = props
   const handleChange = e => {
     const {name} = e.target
     setUser({...user, [name]: e.target.value})
   }
+
+  const jwtToken = Cookies.get('jwt_token')
+  if (jwtToken !== undefined) {
+    return <Redirect to="/" />
+  }
+
   const postDetails = async userDetails => {
     const options = {
       method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
       body: JSON.stringify(userDetails),
     }
     const res = await fetch('https://apis.ccbp.in/login', options)
-    console.log(res)
+    const res1 = await res.json()
+    console.log(res.ok)
+    if (res.ok === true) {
+      //   setStatus({...status, jwt: `${res1.jwt_token}`, err: ''})
+      Cookies.set('jwt_token', res1.jwt_token, {expires: 30})
+      history.push('/')
+    } else {
+      setErr(`*${res1.error_msg}`)
+    }
+    console.log(res1)
   }
+
+  //   console.log(status)
   const handleSubmit = e => {
     e.preventDefault()
     const userDetails = {username: user.username, password: user.password}
@@ -38,7 +56,7 @@ const Login = () => {
           <div className="user-con">
             <label className="label-ele pt-3 pb-1" htmlFor="#1">
               USERNAME
-            </label>{' '}
+            </label>
             <br />
             <input
               type="text"
@@ -52,7 +70,7 @@ const Login = () => {
           <div className="pwd-con">
             <label className="label-ele pt-3 pb-1" htmlFor="#2">
               PASSWORD
-            </label>{' '}
+            </label>
             <br />
             <input
               type="password"
@@ -64,10 +82,11 @@ const Login = () => {
               onChange={handleChange}
             />
           </div>
-          <div className="btn-con pt-3">
+          <div className="btn-con pt-3 text-center">
             <button className="btn btn-primary" onClick={handleSubmit}>
               login
             </button>
+            <p className="text-danger">{err}</p>
           </div>
         </div>
       </div>
